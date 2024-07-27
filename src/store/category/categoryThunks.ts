@@ -1,51 +1,69 @@
 import {createAsyncThunk} from '@reduxjs/toolkit';
+import {ApiCategories, ApiCategory, Category} from '../../types';
 import axiosApi from '../../axiosApi';
-import {ApiCategory, MutationApiCategory} from '../../types';
 import {RootState} from '../../app/store';
 
 export const createCategory = createAsyncThunk<void, ApiCategory, {state: RootState}>(
-  'category/createCategory',
+  'category/create',
   async (category: ApiCategory) => {
-    await axiosApi.post('/categories.json' , category);
+    await axiosApi.post('/categories.json', category);
   }
 );
 
-export const fetchOneCategory = createAsyncThunk<MutationApiCategory | undefined, string, {state: RootState}>(
-  'category/fetchOneCategory',
-  async (id: string) => {
-    const response = await axiosApi.get<MutationApiCategory | undefined>(`/categories/${id}.json`);
-
-    if (response.data !== undefined) {
-      return response.data;
-    }
-  }
-);
-
-export const fetchDataCategories = createAsyncThunk<MutationApiCategory[] | null, void, {state: RootState}>(
-  'category/fetchDataCategories',
+export const fetchAllCategories = createAsyncThunk<Category[], undefined, {state: RootState}>(
+  'category/fetchAll',
   async () => {
-    const response = await axiosApi.get<{ [key: string]: MutationApiCategory}>('/categories.json');
-
-    if (response.data !== null) {
-      return Object.keys(response.data).map(key => ({
-        ...response.data[key],
-        id: key,
-      }));
-    } else {
+    const response = await axiosApi.get<ApiCategories | null>('/categories.json');
+    const categories = response.data;
+    
+    if (!categories) {
       return [];
     }
+    
+    const fetchedCategories: Category[] = Object.keys(categories).map((id) => {
+      const category = categories[id];
+      return {
+        id,
+        ...category
+      };
+    });
+    
+    return fetchedCategories;
   }
 );
 
-export const updateCategory = createAsyncThunk<void, {id: string, categoryData: ApiCategory}, {state: RootState}>(
-  'category/updateCategory', async ({id, categoryData}) => {
-    await axiosApi.put<ApiCategory>(`/categories/${id}.json`, categoryData);
+export const fetchOneCategory = createAsyncThunk<Category, string, {state: RootState}>(
+  'categories/fetchOne',
+  async (id) => {
+    const response = await axiosApi.get<ApiCategory | null>('/categories/' + id + '.json');
+    const category = response.data;
+    
+    if (category === null) {
+      throw new Error('Item not found');
+    }
+    const oneCategory: Category = {
+      id,
+      ...category
+    };
+    return oneCategory;
+  }
+);
+
+interface UpdateContactParams {
+  id: string;
+  category: ApiCategory;
+}
+
+export const updateCategory = createAsyncThunk<void, UpdateContactParams, {state: RootState}>(
+  'category/update',
+  async ({id, category}) => {
+    await axiosApi.put('/categories/' + id + '.json', category);
   }
 );
 
 export const deleteCategory = createAsyncThunk<void, string, {state: RootState}>(
-  'category/deleteCategory',
+  'category/delete',
   async (id: string) => {
-    await axiosApi.delete(`/categories/${id}.json`);
+    await axiosApi.delete('/categories/' + id + '.json');
   }
 );

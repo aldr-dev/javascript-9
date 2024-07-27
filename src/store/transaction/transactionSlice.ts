@@ -1,129 +1,123 @@
-import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 import {CategoryMutation, Transaction} from '../../types';
+import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 import {
   createTransaction,
   deleteTransaction,
   fetchAllTransactions,
   fetchCategoryPreview,
-  fetchOneTransaction, updateTransaction
+  fetchOneTransaction
 } from './transactionThunks';
+import {RootState} from '../../app/store';
 
-export interface TransactionState {
+interface TransactionState {
   transactions: Transaction[];
   transaction: Transaction | null;
   categoryPreview: CategoryMutation[];
-  getDataLoading: boolean;
-  getDataModalLoading: boolean;
-  buttonSaveAndEditLoading: boolean;
-  buttonDeleteTransactionLoading: boolean | string;
-  transactionModal: boolean;
+  createLoading: boolean;
+  fetchLoading: boolean;
+  fetchOneLoading: boolean;
+  updateLoading: boolean;
+  fetchPreviewLoading: boolean;
+  deleteLoading: false | string;
+  showAddModal: boolean;
+  showEditModal: boolean;
 }
 
 const initialState: TransactionState = {
   transactions: [],
   transaction: null,
   categoryPreview: [],
-  getDataLoading: false,
-  getDataModalLoading: false,
-  buttonSaveAndEditLoading: false,
-  buttonDeleteTransactionLoading: false,
-  transactionModal: false,
+  createLoading: false,
+  fetchLoading: false,
+  fetchOneLoading: false,
+  updateLoading: false,
+  fetchPreviewLoading: false,
+  deleteLoading: false,
+  showAddModal: false,
+  showEditModal: false,
 };
 
 export const transactionSlice = createSlice({
   name: 'transaction',
   initialState,
   reducers: {
-    showTransactionModal: (state: TransactionState, action: PayloadAction<boolean>) => {
-      state.transactionModal = action.payload;
+    showAddTransactionModal: (state, action: PayloadAction<boolean>) => {
+      state.showAddModal = action.payload;
+    },
+    showEditTransactionModal: (state, action: PayloadAction<boolean>) => {
+      state.showEditModal = action.payload;
     },
   },
-  extraReducers: (builder) => {
-    builder.addCase(createTransaction.pending, (state: TransactionState) => {
-      state.buttonSaveAndEditLoading = true;
+  extraReducers: builder => {
+    builder.addCase(createTransaction.pending, (state) => {
+      state.createLoading = true;
     });
-    builder.addCase(createTransaction.fulfilled, (state: TransactionState) => {
-      state.buttonSaveAndEditLoading = false;
+    builder.addCase(createTransaction.fulfilled, (state) => {
+      state.createLoading = false;
     });
-    builder.addCase(createTransaction.rejected, (state: TransactionState) => {
-      state.buttonSaveAndEditLoading = false;
+    builder.addCase(createTransaction.rejected, (state) => {
+      state.createLoading = false;
     });
-
-    builder.addCase(fetchCategoryPreview.pending, (state: TransactionState) => {
-      state.getDataLoading = true;
+    
+    builder.addCase(fetchCategoryPreview.pending, (state) => {
+      state.fetchPreviewLoading = true;
     });
-    builder.addCase(fetchCategoryPreview.fulfilled, (state: TransactionState, {payload: categories}) => {
-      state.getDataLoading = false;
+    builder.addCase(fetchCategoryPreview.fulfilled, (state, {payload: categories}) => {
+      state.fetchPreviewLoading = false;
       state.categoryPreview = categories;
     });
-    builder.addCase(fetchCategoryPreview.rejected, (state: TransactionState) => {
-      state.getDataLoading = false;
+    builder.addCase(fetchCategoryPreview.rejected, (state) => {
+      state.fetchPreviewLoading = false;
     });
-
-    builder.addCase(fetchAllTransactions.pending, (state: TransactionState) => {
-      state.getDataLoading = true;
+    
+    builder.addCase(fetchAllTransactions.pending, (state) => {
+      state.fetchLoading = true;
     });
-    builder.addCase(fetchAllTransactions.fulfilled, (state: TransactionState, {payload: transactions}) => {
-      state.getDataLoading = false;
+    builder.addCase(fetchAllTransactions.fulfilled, (state, {payload: transactions}) => {
+      state.fetchLoading = false;
       state.transactions = transactions;
     });
-    builder.addCase(fetchAllTransactions.rejected, (state: TransactionState) => {
-      state.getDataLoading = false;
+    builder.addCase(fetchAllTransactions.rejected, (state) => {
+      state.fetchLoading = false;
     });
-
-    builder.addCase(fetchOneTransaction.pending, (state: TransactionState) => {
-      state.getDataModalLoading = true;
+    
+    builder.addCase(fetchOneTransaction.pending, (state) => {
+      state.fetchOneLoading = true;
     });
-    builder.addCase(fetchOneTransaction.fulfilled, (state: TransactionState, {payload: transaction}) => {
-      state.getDataModalLoading = false;
+    builder.addCase(fetchOneTransaction.fulfilled, (state, {payload: transaction}) => {
+      state.fetchOneLoading = false;
       state.transaction = transaction;
     });
-    builder.addCase(fetchOneTransaction.rejected, (state: TransactionState) => {
-      state.getDataModalLoading = false;
+    builder.addCase(fetchOneTransaction.rejected, (state) => {
+      state.fetchOneLoading = false;
     });
-
-    builder.addCase(deleteTransaction.pending, (state: TransactionState, {meta: {arg: dishId}}) => {
-      state.buttonDeleteTransactionLoading = dishId;
+    
+    builder.addCase(deleteTransaction.pending, (state, {meta}) => {
+      state.deleteLoading = meta.arg;
     });
-    builder.addCase(deleteTransaction.fulfilled, (state: TransactionState) => {
-      state.buttonDeleteTransactionLoading = false;
+    builder.addCase(deleteTransaction.fulfilled, (state) => {
+      state.deleteLoading = false;
     });
-    builder.addCase(deleteTransaction.rejected, (state: TransactionState) => {
-      state.buttonDeleteTransactionLoading = false;
+    builder.addCase(deleteTransaction.rejected, (state) => {
+      state.deleteLoading = false;
     });
-
-    builder.addCase(updateTransaction.pending, (state: TransactionState) => {
-      state.buttonSaveAndEditLoading = true;
-    });
-    builder.addCase(updateTransaction.fulfilled, (state: TransactionState) => {
-      state.buttonSaveAndEditLoading = false;
-    });
-    builder.addCase(updateTransaction.rejected, (state: TransactionState) => {
-      state.buttonSaveAndEditLoading = false;
-    });
-  },
-  selectors: {
-    selectTransactions: (state: TransactionState) => state.transactions,
-    selectTransaction: (state: TransactionState) => state.transaction,
-    selectGetDataLoading: (state: TransactionState) => state.getDataLoading,
-    selectGetDataModalLoading: (state: TransactionState) => state.getDataModalLoading,
-    selectButtonSaveAndEditLoading: (state: TransactionState) => state.buttonSaveAndEditLoading,
-    selectButtonDeleteTransactionsLoading: (state: TransactionState) => state.buttonDeleteTransactionLoading,
-    selectCategoryModal: (state: TransactionState) => state.transactionModal,
   }
 });
 
+
 export const transactionReducer = transactionSlice.reducer;
-export const {
-  selectTransactions,
-  selectTransaction,
-  selectGetDataLoading,
-  selectGetDataModalLoading,
-  selectButtonSaveAndEditLoading,
-  selectButtonDeleteTransactionsLoading,
-  selectCategoryModal,
-} = transactionSlice.selectors;
 
 export const {
-  showTransactionModal,
+  showAddTransactionModal,
+  showEditTransactionModal
 } = transactionSlice.actions;
+
+
+export const selectTransactions = (state: RootState) => state.transaction.transactions;
+export const selectTransaction = (state: RootState) => state.transaction.transaction;
+export const selectCategoryPreview = (state: RootState) => state.transaction.categoryPreview;
+export const selectFetchTransactionsLoading = (state: RootState) => state.transaction.fetchLoading;
+export const selectCreateTransactionLoading = (state: RootState) => state.transaction.createLoading;
+export const selectShowTransaction = (state: RootState) => state.transaction.showAddModal;
+export const selectShowEditTransaction = (state: RootState) => state.transaction.showEditModal;
+export const selectDeleteTransaction = (state: RootState) => state.transaction.deleteLoading;

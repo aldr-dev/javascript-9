@@ -1,26 +1,16 @@
-export interface ApiCategory {
+export interface Category {
   id: string;
   type: string;
   name: string;
 }
 
-export type ApiCategoryMutation = Omit<ApiCategory, 'type'>
+export type ApiCategory = Omit<Category, 'id'>;
 
-export interface FetchApiCategory {
-  [id: string]: Omit<ApiCategory, 'id'>;
+export interface ApiCategories {
+  [id: string]: ApiCategory;
 }
 
-export interface MutationApiCategory extends ApiCategory{
-  id: string;
-}
-
-export type CategoryMutation = Omit<ApiCategory, 'type'>
-
-export interface TransactionForm {
-  category: string;
-  amount: string;
-  createdAt: string;
-}
+export type CategoryMutation = Omit<Category, 'type'>
 
 export interface ApiTransaction {
   category: string;

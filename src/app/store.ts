@@ -4,7 +4,7 @@ import {transactionReducer} from '../store/transaction/transactionSlice';
 
 export const store = configureStore({
   reducer: {
-    category: categoryReducer,
+    categories: categoryReducer,
     transaction: transactionReducer,
   }
 });

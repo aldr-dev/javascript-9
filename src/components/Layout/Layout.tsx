@@ -4,8 +4,10 @@ import Navbar from '../Navbar/Navbar';
 const Layout: React.FC<PropsWithChildren> = ({children}) => {
   return (
     <>
-      <Navbar />
-      <main className="container-xxl">
+      <header className="mb-5">
+        <Navbar/>
+      </header>
+      <main className="col-6 mx-auto">
         {children}
       </main>
     </>
