@@ -1,12 +1,17 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {showAddCategoryModal} from '../../store/category/categorySlice';
 import {useAppDispatch} from '../../app/hooks';
 import CategoryList from '../../components/Category/CategoryList';
 import ModalAddCategory from '../../components/Modal/ModalAddCategory';
 import AddCategory from '../AddCategory/AddCategory';
+import {fetchAllCategories} from '../../store/category/categoryThunks';
 
 const Categories: React.FC = () => {
   const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(fetchAllCategories());
+  }, [dispatch]);
   
   return (
     <>
