@@ -1,7 +1,7 @@
 const ButtonSpinner = () => {
   return (
     <>
-      <div className="spinner-border spinner-border-sm text-white" role="status">
+      <div className="spinner-border spinner-border-sm text-primary-emphasis" role="status">
         <span className="visually-hidden">Loading...</span>
       </div>
     </>

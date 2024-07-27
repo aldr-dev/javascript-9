@@ -1,17 +1,17 @@
-import {Link} from 'react-router-dom';
+import {NavLink} from 'react-router-dom';
 
 const Navbar = () => {
   return (
     <header className="mb-4">
       <nav className="navbar navbar-dark bg-dark">
         <div className="container-xxl">
-          <Link to="/" className="navbar-brand">
+          <NavLink to="/" className="navbar-brand">
             Finance Tracker
-          </Link>
+          </NavLink>
           <div className="navbar-nav flex-row gap-2 flex-nowrap">
-            <Link to="/categories" className="nav-link">
+            <NavLink to="/categories" className="nav-link">
               Categories
-            </Link>
+            </NavLink>
             <button className="nav-link">Add</button>
           </div>
         </div>
