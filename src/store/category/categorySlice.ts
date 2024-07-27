@@ -10,7 +10,6 @@ export interface CategoryState {
   buttonSaveAndEditLoading: boolean;
   buttonDeleteCategoryLoading: boolean | string;
   categoryModal: boolean;
-  transactionModal: boolean;
 }
 
 const initialState: CategoryState = {
@@ -21,7 +20,6 @@ const initialState: CategoryState = {
   buttonSaveAndEditLoading: false,
   buttonDeleteCategoryLoading: false,
   categoryModal: false,
-  transactionModal: false,
 };
 
 export const categorySlice = createSlice({
@@ -30,9 +28,6 @@ export const categorySlice = createSlice({
   reducers: {
     showCategoryModal: (state: CategoryState, action: PayloadAction<boolean>) => {
       state.categoryModal = action.payload;
-    },
-    showTransactionModal: (state: CategoryState, action: PayloadAction<boolean>) => {
-      state.transactionModal = action.payload;
     },
     updateStateCategoriesData: (state: CategoryState, {payload: id}: PayloadAction<string>) => {
       state.categories = state.categories.filter((item) => item.id !== id);
@@ -103,7 +98,6 @@ export const categorySlice = createSlice({
     selectButtonSaveAndEditLoading: (state: CategoryState) => state.buttonSaveAndEditLoading,
     selectButtonDeleteCategoryLoading: (state: CategoryState) => state.buttonDeleteCategoryLoading,
     selectCategoryModal: (state: CategoryState) => state.categoryModal,
-    selectTransactionModal: (state: CategoryState) => state.transactionModal,
   }
 });
 
@@ -116,10 +110,8 @@ export const {
   selectButtonSaveAndEditLoading,
   selectButtonDeleteCategoryLoading,
   selectCategoryModal,
-  selectTransactionModal,
 } = categorySlice.selectors;
 export const {
   showCategoryModal,
-  showTransactionModal,
   updateStateCategoriesData,
 } = categorySlice.actions;
